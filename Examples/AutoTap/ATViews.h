@@ -10,6 +10,14 @@ UIColor *ATSwipeColor(void);
 UIColor *ATGoColor(void);
 UIColor *ATStopColor(void);
 
+// Fixed, fully opaque colors: the overlay sits on top of any app in either
+// appearance, so it never uses translucent system label colors.
+UIColor *ATTextColor(void);
+UIColor *ATSecondaryTextColor(void);
+UIColor *ATMutedTextColor(void);
+UIColor *ATSurfaceColor(void);
+UIColor *ATCardColor(void);
+
 // Lets touches through wherever it has no subview.
 @interface ATPassthroughView : UIView
 @end

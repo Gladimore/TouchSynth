@@ -17,6 +17,11 @@ UIColor *ATTapColor(void) { return [UIColor colorWithRed:0.30 green:0.58 blue:1.
 UIColor *ATSwipeColor(void) { return [UIColor colorWithRed:1.00 green:0.62 blue:0.22 alpha:1]; }
 UIColor *ATGoColor(void) { return [UIColor colorWithRed:0.20 green:0.80 blue:0.45 alpha:1]; }
 UIColor *ATStopColor(void) { return [UIColor colorWithRed:1.00 green:0.32 blue:0.32 alpha:1]; }
+UIColor *ATTextColor(void) { return [UIColor whiteColor]; }
+UIColor *ATSecondaryTextColor(void) { return [UIColor colorWithRed:0.80 green:0.82 blue:0.86 alpha:1]; }
+UIColor *ATMutedTextColor(void) { return [UIColor colorWithRed:0.58 green:0.60 blue:0.65 alpha:1]; }
+UIColor *ATSurfaceColor(void) { return [UIColor colorWithRed:0.09 green:0.10 blue:0.12 alpha:0.97]; }
+UIColor *ATCardColor(void) { return [UIColor colorWithRed:0.17 green:0.18 blue:0.21 alpha:1]; }
 
 static UIImage *ATSymbol(NSString *name, CGFloat size, UIFontWeight weight) {
     UIImageSymbolWeight symbolWeight = weight >= UIFontWeightBold ? UIImageSymbolWeightBold : UIImageSymbolWeightSemibold;
@@ -79,6 +84,8 @@ static NSString *ATFormatLoops(NSInteger loops) {
         _tint = [[UIView alloc] initWithFrame:self.bounds];
         _tint.layer.cornerRadius = kBubbleSize / 2;
         _tint.userInteractionEnabled = NO;
+        _tint.layer.borderWidth = 2;
+        _tint.layer.borderColor = [UIColor colorWithWhite:1 alpha:0.9].CGColor;
         [self addSubview:_tint];
 
         _icon = [[UIImageView alloc] initWithFrame:CGRectInset(self.bounds, 15, 15)];
@@ -111,7 +118,7 @@ static NSString *ATFormatLoops(NSInteger loops) {
 
 - (void)applyRunning:(BOOL)running {
     _icon.image = ATSymbol(running ? @"stop.fill" : @"hand.tap.fill", 22, UIFontWeightBold);
-    _tint.backgroundColor = running ? [ATStopColor() colorWithAlphaComponent:0.55] : [ATTapColor() colorWithAlphaComponent:0.35];
+    _tint.backgroundColor = running ? [ATStopColor() colorWithAlphaComponent:0.92] : [ATTapColor() colorWithAlphaComponent:0.92];
     _ring.strokeColor = ATGoColor().CGColor;
     _ring.hidden = !running;
     [_ring removeAllAnimations];
@@ -175,7 +182,7 @@ static NSString *ATFormatLoops(NSInteger loops) {
         self.layer.cornerRadius = diameter / 2;
         self.layer.borderWidth = 2.5;
         self.layer.borderColor = color.CGColor;
-        self.backgroundColor = [color colorWithAlphaComponent:0.28];
+        self.backgroundColor = [color colorWithAlphaComponent:0.55];
         self.layer.shadowColor = [UIColor blackColor].CGColor;
         self.layer.shadowOpacity = 0.4;
         self.layer.shadowRadius = 4;
@@ -186,7 +193,9 @@ static NSString *ATFormatLoops(NSInteger loops) {
             label.text = [NSString stringWithFormat:@"%ld", (long)number];
             label.textAlignment = NSTextAlignmentCenter;
             label.textColor = [UIColor whiteColor];
-            label.font = [UIFont systemFontOfSize:diameter * 0.36 weight:UIFontWeightHeavy];
+            label.font = [UIFont systemFontOfSize:diameter * 0.38 weight:UIFontWeightHeavy];
+            label.shadowColor = [UIColor colorWithWhite:0 alpha:0.6];
+            label.shadowOffset = CGSizeMake(0, 1);
             [self addSubview:label];
         } else {
             self.backgroundColor = [color colorWithAlphaComponent:0.55];
@@ -217,7 +226,7 @@ static NSString *ATFormatLoops(NSInteger loops) {
     _active = active;
     [UIView animateWithDuration:0.25 delay:0 usingSpringWithDamping:0.55 initialSpringVelocity:0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
         self.transform = active ? CGAffineTransformMakeScale(1.25, 1.25) : CGAffineTransformIdentity;
-        self.backgroundColor = [self->_color colorWithAlphaComponent:active ? 0.75 : 0.28];
+        self.backgroundColor = [self->_color colorWithAlphaComponent:active ? 0.9 : 0.55];
     } completion:nil];
 }
 
@@ -295,7 +304,8 @@ static NSString *ATFormatLoops(NSInteger loops) {
     blur.layer.cornerCurve = kCACornerCurveContinuous;
     blur.clipsToBounds = YES;
     blur.layer.borderWidth = 1;
-    blur.layer.borderColor = [UIColor colorWithWhite:1 alpha:0.12].CGColor;
+    blur.layer.borderColor = [UIColor colorWithWhite:1 alpha:0.16].CGColor;
+    blur.contentView.backgroundColor = ATSurfaceColor(); // solid, so text reads over any app
     [self addSubview:blur];
 
     UIScrollView *scroll = [[UIScrollView alloc] init];
@@ -357,18 +367,18 @@ static NSString *ATFormatLoops(NSInteger loops) {
     UILabel *title = [[UILabel alloc] init];
     title.text = @"AutoTap";
     title.font = [UIFont systemFontOfSize:21 weight:UIFontWeightBold];
-    title.textColor = [UIColor labelColor];
+    title.textColor = ATTextColor();
     UILabel *subtitle = [[UILabel alloc] init];
     subtitle.text = @"Powered by TouchSynth";
     subtitle.font = [UIFont systemFontOfSize:12 weight:UIFontWeightMedium];
-    subtitle.textColor = [UIColor secondaryLabelColor];
+    subtitle.textColor = ATSecondaryTextColor();
     UIStackView *titles = [[UIStackView alloc] initWithArrangedSubviews:@[title, subtitle]];
     titles.axis = UILayoutConstraintAxisVertical;
     titles.spacing = 1;
 
     UIButton *close = [UIButton buttonWithType:UIButtonTypeSystem];
     [close setImage:ATSymbol(@"xmark.circle.fill", 24, UIFontWeightSemibold) forState:UIControlStateNormal];
-    close.tintColor = [UIColor tertiaryLabelColor];
+    close.tintColor = ATMutedTextColor();
     [close addTarget:self action:@selector(closeTapped) forControlEvents:UIControlEventTouchUpInside];
     [close setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
 
@@ -381,8 +391,8 @@ static NSString *ATFormatLoops(NSInteger loops) {
 - (UILabel *)sectionLabel:(NSString *)text {
     UILabel *label = [[UILabel alloc] init];
     label.attributedText = [[NSAttributedString alloc] initWithString:text attributes:@{
-        NSFontAttributeName: [UIFont systemFontOfSize:12 weight:UIFontWeightSemibold],
-        NSForegroundColorAttributeName: [UIColor secondaryLabelColor],
+        NSFontAttributeName: [UIFont systemFontOfSize:13 weight:UIFontWeightBold],
+        NSForegroundColorAttributeName: ATSecondaryTextColor(),
         NSKernAttributeName: @1.2,
     }];
     return label;
@@ -390,12 +400,12 @@ static NSString *ATFormatLoops(NSInteger loops) {
 
 - (UIView *)stepsSection {
     _stepsCount = [[UILabel alloc] init];
-    _stepsCount.font = [UIFont monospacedDigitSystemFontOfSize:12 weight:UIFontWeightMedium];
-    _stepsCount.textColor = [UIColor secondaryLabelColor];
+    _stepsCount.font = [UIFont monospacedDigitSystemFontOfSize:13 weight:UIFontWeightSemibold];
+    _stepsCount.textColor = ATSecondaryTextColor();
     UIStackView *header = [[UIStackView alloc] initWithArrangedSubviews:@[[self sectionLabel:@"STEPS"], [UIView new], _stepsCount]];
 
     UIView *box = [[UIView alloc] init];
-    box.backgroundColor = [UIColor colorWithWhite:1 alpha:0.06];
+    box.backgroundColor = ATCardColor();
     box.layer.cornerRadius = 16;
     box.layer.cornerCurve = kCACornerCurveContinuous;
     box.clipsToBounds = YES;
@@ -414,8 +424,8 @@ static NSString *ATFormatLoops(NSInteger loops) {
     _emptyLabel.text = @"No steps yet.\nTap Record, then tap or drag on screen.";
     _emptyLabel.numberOfLines = 0;
     _emptyLabel.textAlignment = NSTextAlignmentCenter;
-    _emptyLabel.font = [UIFont systemFontOfSize:13];
-    _emptyLabel.textColor = [UIColor tertiaryLabelColor];
+    _emptyLabel.font = [UIFont systemFontOfSize:14 weight:UIFontWeightMedium];
+    _emptyLabel.textColor = ATMutedTextColor();
     _emptyLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [box addSubview:_emptyLabel];
 
@@ -445,10 +455,10 @@ static NSString *ATFormatLoops(NSInteger loops) {
     UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
     [button setImage:ATSymbol(symbol, 13, UIFontWeightBold) forState:UIControlStateNormal];
     [button setTitle:[@" " stringByAppendingString:title] forState:UIControlStateNormal];
-    button.titleLabel.font = [UIFont systemFontOfSize:14 weight:UIFontWeightSemibold];
+    button.titleLabel.font = [UIFont systemFontOfSize:15 weight:UIFontWeightBold];
     button.tintColor = tint;
-    [button setTitleColor:[UIColor labelColor] forState:UIControlStateNormal];
-    button.backgroundColor = [UIColor colorWithWhite:1 alpha:0.09];
+    [button setTitleColor:ATTextColor() forState:UIControlStateNormal];
+    button.backgroundColor = ATCardColor();
     button.layer.cornerRadius = 12;
     button.layer.cornerCurve = kCACornerCurveContinuous;
     [button.heightAnchor constraintEqualToConstant:40].active = YES;
@@ -459,8 +469,8 @@ static NSString *ATFormatLoops(NSInteger loops) {
 - (UIView *)editButtons {
     UIStackView *row = [[UIStackView alloc] initWithArrangedSubviews:@[
         [self pillWithTitle:@"Record" symbol:@"record.circle" tint:ATStopColor() action:@selector(recordTapped)],
-        [self pillWithTitle:@"Undo" symbol:@"arrow.uturn.backward" tint:[UIColor labelColor] action:@selector(undoTapped)],
-        [self pillWithTitle:@"Clear" symbol:@"trash" tint:[UIColor labelColor] action:@selector(clearTapped)],
+        [self pillWithTitle:@"Undo" symbol:@"arrow.uturn.backward" tint:ATTextColor() action:@selector(undoTapped)],
+        [self pillWithTitle:@"Clear" symbol:@"trash" tint:ATTextColor() action:@selector(clearTapped)],
     ]];
     row.distribution = UIStackViewDistributionFillEqually;
     row.spacing = 8;
@@ -474,7 +484,7 @@ static NSString *ATFormatLoops(NSInteger loops) {
     UILabel *label = [[UILabel alloc] init];
     label.text = title;
     label.font = [UIFont systemFontOfSize:15 weight:UIFontWeightMedium];
-    label.textColor = [UIColor labelColor];
+    label.textColor = ATTextColor();
     UILabel *value = [[UILabel alloc] init];
     value.font = [UIFont monospacedDigitSystemFontOfSize:15 weight:UIFontWeightSemibold];
     value.textColor = tint;
@@ -482,6 +492,8 @@ static NSString *ATFormatLoops(NSInteger loops) {
 
     UISlider *slider = [[UISlider alloc] init];
     slider.minimumTrackTintColor = tint;
+    slider.maximumTrackTintColor = [UIColor colorWithWhite:1 alpha:0.28];
+    slider.thumbTintColor = [UIColor whiteColor];
     [slider addTarget:self action:@selector(sliderChanged:) forControlEvents:UIControlEventValueChanged];
 
     UIStackView *row = [[UIStackView alloc] initWithArrangedSubviews:@[top, slider]];
@@ -490,6 +502,19 @@ static NSString *ATFormatLoops(NSInteger loops) {
     *outSlider = slider;
     *outValue = value;
     return row;
+}
+
+// The default stepper is drawn for a light background; give it opaque parts.
+- (void)styleStepper:(UIStepper *)stepper {
+    UIImage *(^white)(NSString *) = ^UIImage *(NSString *name) {
+        return [ATSymbol(name, 14, UIFontWeightBold) imageWithTintColor:[UIColor whiteColor]
+                                                         renderingMode:UIImageRenderingModeAlwaysOriginal];
+    };
+    [stepper setIncrementImage:white(@"plus") forState:UIControlStateNormal];
+    [stepper setDecrementImage:white(@"minus") forState:UIControlStateNormal];
+    stepper.backgroundColor = ATCardColor();
+    stepper.layer.cornerRadius = 9;
+    stepper.clipsToBounds = YES;
 }
 
 - (UIView *)timingSection {
@@ -503,6 +528,7 @@ static NSString *ATFormatLoops(NSInteger loops) {
     UILabel *loopLabel = [[UILabel alloc] init];
     loopLabel.text = @"Repeat";
     loopLabel.font = [UIFont systemFontOfSize:15 weight:UIFontWeightMedium];
+    loopLabel.textColor = ATTextColor();
     _loopValue = [[UILabel alloc] init];
     _loopValue.font = [UIFont monospacedDigitSystemFontOfSize:15 weight:UIFontWeightSemibold];
     _loopValue.textColor = ATGoColor();
@@ -515,6 +541,7 @@ static NSString *ATFormatLoops(NSInteger loops) {
         }
     }
     [_loopStepper addTarget:self action:@selector(loopChanged) forControlEvents:UIControlEventValueChanged];
+    [self styleStepper:_loopStepper];
     UIStackView *loopRow = [[UIStackView alloc] initWithArrangedSubviews:@[loopLabel, [UIView new], _loopValue, _loopStepper]];
     loopRow.alignment = UIStackViewAlignmentCenter;
     loopRow.spacing = 12;
@@ -522,6 +549,7 @@ static NSString *ATFormatLoops(NSInteger loops) {
     UILabel *touchesLabel = [[UILabel alloc] init];
     touchesLabel.text = @"Show touches";
     touchesLabel.font = [UIFont systemFontOfSize:15 weight:UIFontWeightMedium];
+    touchesLabel.textColor = ATTextColor();
     _touchesSwitch = [[UISwitch alloc] init];
     _touchesSwitch.onTintColor = ATGoColor();
     _touchesSwitch.on = _session.showTouches;
@@ -546,8 +574,8 @@ static NSString *ATFormatLoops(NSInteger loops) {
     [_runButton addTarget:self action:@selector(runTapped) forControlEvents:UIControlEventTouchUpInside];
 
     _statusLabel = [[UILabel alloc] init];
-    _statusLabel.font = [UIFont monospacedDigitSystemFontOfSize:12 weight:UIFontWeightMedium];
-    _statusLabel.textColor = [UIColor secondaryLabelColor];
+    _statusLabel.font = [UIFont monospacedDigitSystemFontOfSize:13 weight:UIFontWeightMedium];
+    _statusLabel.textColor = ATSecondaryTextColor();
     _statusLabel.textAlignment = NSTextAlignmentCenter;
 
     UIStackView *section = [[UIStackView alloc] initWithArrangedSubviews:@[_runButton, _statusLabel]];
@@ -576,10 +604,11 @@ static NSString *ATFormatLoops(NSInteger loops) {
 
     UILabel *title = [[UILabel alloc] init];
     title.text = swipe ? @"Swipe" : @"Tap";
-    title.font = [UIFont systemFontOfSize:15 weight:UIFontWeightSemibold];
+    title.font = [UIFont systemFontOfSize:16 weight:UIFontWeightSemibold];
+    title.textColor = ATTextColor();
     UILabel *detail = [[UILabel alloc] init];
-    detail.font = [UIFont monospacedDigitSystemFontOfSize:12 weight:UIFontWeightRegular];
-    detail.textColor = [UIColor secondaryLabelColor];
+    detail.font = [UIFont monospacedDigitSystemFontOfSize:13 weight:UIFontWeightMedium];
+    detail.textColor = ATSecondaryTextColor();
     detail.text = swipe
         ? [NSString stringWithFormat:@"%.0f, %.0f  →  %.0f, %.0f", action.start.x, action.start.y, action.end.x, action.end.y]
         : [NSString stringWithFormat:@"x %.0f   y %.0f", action.start.x, action.start.y];
@@ -588,7 +617,7 @@ static NSString *ATFormatLoops(NSInteger loops) {
 
     UIButton *remove = [UIButton buttonWithType:UIButtonTypeSystem];
     [remove setImage:ATSymbol(@"minus.circle.fill", 20, UIFontWeightSemibold) forState:UIControlStateNormal];
-    remove.tintColor = [UIColor tertiaryLabelColor];
+    remove.tintColor = ATMutedTextColor();
     remove.tag = index;
     [remove addTarget:self action:@selector(removeTapped:) forControlEvents:UIControlEventTouchUpInside];
     [remove setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
@@ -671,7 +700,7 @@ static NSString *ATFormatLoops(NSInteger loops) {
     shake.duration = 0.35;
     [self.layer addAnimation:shake forKey:@"shake"];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        self->_statusLabel.textColor = [UIColor secondaryLabelColor];
+        self->_statusLabel.textColor = ATSecondaryTextColor();
         [self updateStatus];
     });
 }

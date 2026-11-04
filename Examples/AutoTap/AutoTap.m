@@ -84,7 +84,7 @@ static CAShapeLayer *ATArrowLayer(UIColor *color) {
 
 - (instancetype)initWithFrame:(CGRect)frame {
     if ((self = [super initWithFrame:frame])) {
-        self.backgroundColor = [UIColor colorWithWhite:0 alpha:0.28];
+        self.backgroundColor = [UIColor colorWithWhite:0 alpha:0.35];
         self.multipleTouchEnabled = NO;
         _preview = ATArrowLayer(ATSwipeColor());
         [self.layer addSublayer:_preview];
@@ -100,12 +100,15 @@ static CAShapeLayer *ATArrowLayer(UIColor *color) {
     pill.clipsToBounds = YES;
     pill.translatesAutoresizingMaskIntoConstraints = NO;
     pill.overrideUserInterfaceStyle = UIUserInterfaceStyleDark;
+    pill.contentView.backgroundColor = ATSurfaceColor();
+    pill.layer.borderWidth = 1;
+    pill.layer.borderColor = [UIColor colorWithWhite:1 alpha:0.16].CGColor;
 
     UIImageView *dot = [[UIImageView alloc] initWithImage:[UIImage systemImageNamed:@"record.circle.fill"]];
     dot.tintColor = ATStopColor();
     UILabel *text = [[UILabel alloc] init];
     text.numberOfLines = 2;
-    text.font = [UIFont systemFontOfSize:13 weight:UIFontWeightSemibold];
+    text.font = [UIFont systemFontOfSize:14 weight:UIFontWeightSemibold];
     text.textColor = [UIColor whiteColor];
     text.text = @"Tap to add a tap\nDrag to add a swipe";
     UIButton *done = [UIButton buttonWithType:UIButtonTypeSystem];
@@ -455,7 +458,7 @@ static CAShapeLayer *ATArrowLayer(UIColor *color) {
         marker.active = NO;
     }
     [UIView animateWithDuration:0.25 animations:^{
-        self->_markerLayer.alpha = running ? 0.6 : 1;
+        self->_markerLayer.alpha = running ? 0.85 : 1;
     }];
 }
 
