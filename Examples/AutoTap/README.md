@@ -2,6 +2,12 @@
 
 An auto clicker you inject into an app as a `.dylib`. It's built on TouchSynth.
 
+<p align="center">
+  <img src="../../docs/media/autotap-demo.gif" width="300" alt="AutoTap recording tap steps in a game, then replaying them with synthesized touches">
+  <br>
+  <a href="../../docs/media/autotap-demo.mp4">Watch the full-quality video</a>
+</p>
+
 - **Steps:** record tap points and swipes directly on screen.
 - **Timing:** set the delay after each tap, the delay after each swipe, and how long a swipe takes.
 - **Repeats:** loop forever, or a set number of times.

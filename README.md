@@ -4,9 +4,15 @@ In-process touch synthesis for iOS, reimplemented from the replay engine in iGam
 
 **Scope:** it only reaches windows in the process it runs in, so link it into your app or inject it into the target. It can't touch SpringBoard or other apps, and it doesn't create HID events.
 
-**Status:** this has never run on a device. The logic tests pass and the sources compile for `arm64-apple-ios14.0`, but only against the hand-written headers in `tools/stub-sdk`. See [What has been verified](#what-has-been-verified).
+**Status:** it works on a real device, injected into a game through AutoTap (below). GitHub Actions builds it with Theos on every push. See [What has been verified](#what-has-been-verified).
 
 ## Example: AutoTap
+
+<p align="center">
+  <img src="docs/media/autotap-demo.gif" width="300" alt="AutoTap recording tap steps in a game, then replaying them with synthesized touches">
+  <br>
+  <a href="docs/media/autotap-demo.mp4">Watch the full-quality video</a>
+</p>
 
 [Examples/AutoTap](Examples/AutoTap) is an injectable auto clicker built on this library. It lets you record taps and swipes on screen, set the delays and swipe time, and loop them. GitHub Actions builds `AutoTap.dylib` on every push.
 
@@ -113,5 +119,5 @@ Run `tools/check.sh <scratch-dir>` on any machine with clang.
 | `TSGSEventProxy` ivar offsets vs. iGameGod's class metadata | match |
 | Private selectors used vs. strings in the iGameGod binary | all present |
 | `Package.swift` parses | pass |
-| Built with Apple's SDK, with Theos, or linked | **not done:** no iOS SDK here, and this machine's `ld64.lld` refuses Apple platforms |
-| Touches actually reach a view on a device | **not done** |
+| Built and linked with Theos and Apple's SDK | pass, in GitHub Actions on every push |
+| Touches actually reach a view on a device | pass, AutoTap injected into a game (see the demo above) |
