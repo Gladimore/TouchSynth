@@ -27,6 +27,8 @@ jobs:
             bash -c "$(curl -fsSL https://raw.githubusercontent.com/theos/theos/master/bin/install-theos)"
           fi
           test -d "$HOME/theos" || { echo "ERROR: Theos not found"; exit 1; }
+          # The installer also brews ldid, which the Theos cache doesn't keep.
+          command -v ldid >/dev/null || brew install ldid
           echo "THEOS=$HOME/theos" >> "$GITHUB_ENV"
           echo "$HOME/theos/bin" >> "$GITHUB_PATH"
 
