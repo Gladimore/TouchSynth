@@ -1,0 +1,67 @@
+name: Build
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Cache Theos
+        uses: actions/cache@v4
+        with:
+          path: ~/theos
+          key: theos-${{ runner.os }}-v1
+
+      - name: Install Theos
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ ! -d "$HOME/theos" ]; then
+            bash -c "$(curl -fsSL https://raw.githubusercontent.com/theos/theos/master/bin/install-theos)"
+          fi
+          test -d "$HOME/theos" || { echo "ERROR: Theos not found"; exit 1; }
+          echo "THEOS=$HOME/theos" >> "$GITHUB_ENV"
+          echo "$HOME/theos/bin" >> "$GITHUB_PATH"
+
+      - name: Logic tests
+        run: |
+          set -euo pipefail
+          mkdir -p build
+          clang -I Sources/TouchSynth Tests/logic_test.c Sources/TouchSynth/TSTouchLogic.c -o build/logic_test
+          ./build/logic_test
+
+      - name: Build libTouchSynth
+        run: make FINALPACKAGE=1
+
+      - name: Build AutoTap
+        run: make -C Examples/AutoTap FINALPACKAGE=1
+
+      - name: Collect dylibs
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          cp Examples/AutoTap/.theos/obj/arm64/AutoTap.dylib dist/
+          cp .theos/obj/libTouchSynth.dylib dist/ 2>/dev/null || find .theos/obj -name libTouchSynth.dylib -maxdepth 2 -exec cp {} dist/ \;
+          ls -la dist
+          file dist/*.dylib
+
+      - name: Upload AutoTap
+        uses: actions/upload-artifact@v4
+        with:
+          name: AutoTap-dylib
+          path: dist/AutoTap.dylib
+          if-no-files-found: error
+
+      - name: Upload libTouchSynth
+        uses: actions/upload-artifact@v4
+        with:
+          name: libTouchSynth-dylib
+          path: dist/libTouchSynth.dylib
+          if-no-files-found: error

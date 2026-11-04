@@ -6,6 +6,10 @@ In-process touch synthesis for iOS, reimplemented from the replay engine in iGam
 
 **Status:** this has never run on a device. The logic tests pass and the sources compile for `arm64-apple-ios14.0`, but only against the hand-written headers in `tools/stub-sdk`. See [What has been verified](#what-has-been-verified).
 
+## Example: AutoTap
+
+[Examples/AutoTap](Examples/AutoTap) is an injectable auto clicker built on this library. It lets you record taps and swipes on screen, set the delays and swipe time, and loop them. GitHub Actions builds `AutoTap.dylib` on every push.
+
 ## Install
 
 **Swift Package Manager**, for an Xcode app or framework. Add this local package, then `import TouchSynth`:
