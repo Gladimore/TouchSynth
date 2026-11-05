@@ -15,7 +15,9 @@ An auto clicker you inject into an app as a `.dylib`. It's built on TouchSynth.
 
 ## Get the dylib
 
-Each push to GitHub builds it with Actions. Open the repo's **Actions** tab, select the latest run, and download the **AutoTap-dylib** artifact.
+**[Download AutoTap.dylib from the latest release](https://github.com/Gladimore/TouchSynth/releases/latest).**
+
+Every push also builds it with GitHub Actions, as the **AutoTap-dylib** artifact of each run. Downloading artifacts needs a GitHub login.
 
 To build it yourself, you need Theos:
 
